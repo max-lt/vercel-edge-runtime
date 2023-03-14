@@ -1,16 +1,14 @@
 import type { EdgeRuntime as IEdgeRuntime } from '../src/edge-runtime'
 
-const handlerByEvent = new Map<string, Function>()
+const handlerByEvent = new Map<string | symbol, Function>()
 
 let EdgeRuntime: typeof IEdgeRuntime
 
 beforeAll(async () => {
-  jest
-    .spyOn(process, 'on')
-    .mockImplementation((event: string, handler: Function) => {
-      handlerByEvent.set(event, handler)
-      return process
-    })
+  jest.spyOn(process, 'on').mockImplementation((event, handler) => {
+    handlerByEvent.set(event, handler)
+    return process
+  })
   ;({ EdgeRuntime } = await import('../src/edge-runtime'))
 })
 

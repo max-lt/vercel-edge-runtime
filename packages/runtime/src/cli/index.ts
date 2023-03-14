@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { EdgeRuntime } from '../edge-runtime'
+import { EdgeRuntime } from '@edge-runtime/core'
 import { promisify } from 'util'
 import { readFileSync } from 'fs'
 import { runServer } from '../server'

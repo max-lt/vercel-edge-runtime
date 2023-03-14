@@ -1,7 +1,6 @@
 import { createFormat } from '@edge-runtime/format'
+import { EdgeRuntime } from '@edge-runtime/core'
 import createRepl from 'repl'
-
-import { EdgeRuntime } from '../edge-runtime'
 
 const format = createFormat()
 

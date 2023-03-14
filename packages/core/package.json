@@ -1,6 +1,6 @@
 {
-  "name": "edge-runtime",
-  "description": "Run any Edge Function from CLI or Node.js module.",
+  "name": "@edge-runtime/core",
+  "description": "Edge Runtime core runner",
   "homepage": "https://edge-runtime.vercel.app/packages/runtime",
   "version": "2.1.2",
   "main": "dist/index.js",
@@ -8,7 +8,7 @@
     "edge-runtime": "dist/cli/index.js"
   },
   "repository": {
-    "directory": "packages/runtime",
+    "directory": "packages/core",
     "type": "git",
     "url": "git+https://github.com/vercel/edge-runtime.git"
   },
@@ -24,19 +24,7 @@
     "web"
   ],
   "dependencies": {
-    "@edge-runtime/core": "workspace:*",
-    "@edge-runtime/format": "workspace:*",
-    "@edge-runtime/vm": "workspace:*",
-    "exit-hook": "2.2.1",
-    "mri": "1.2.0",
-    "picocolors": "1.0.0",
-    "pretty-bytes": "5.6.0",
-    "pretty-ms": "7.0.1",
-    "time-span": "4.0.0"
-  },
-  "devDependencies": {
-    "@types/node-fetch": "2",
-    "node-fetch": "2"
+    "@edge-runtime/vm": "workspace:*"
   },
   "engines": {
     "node": ">=14"

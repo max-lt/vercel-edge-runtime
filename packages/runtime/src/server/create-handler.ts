@@ -1,4 +1,4 @@
-import type { EdgeRuntime } from '../edge-runtime'
+import type { EdgeRuntime } from '@edge-runtime/core'
 import type { IncomingMessage, ServerResponse } from 'http'
 import type { Logger, NodeHeaders } from '../types'
 import type { EdgeContext } from '@edge-runtime/vm'
@@ -44,14 +44,20 @@ export function createHandler<T extends EdgeContext>(options: Options<T>) {
               )
             : undefined
 
-        const response = await options.runtime.dispatchFetch(
-          String(getURL(req)),
-          {
+        const response = await options.runtime
+          .dispatchFetch(String(getURL(req)), {
             headers: toRequestInitHeaders(req),
             method: req.method,
             body: body?.cloneBodyStream(),
-          }
-        )
+          })
+          .catch((error) => {
+            res.writeHead(500)
+            console.error(error)
+          })
+
+        if (!response) {
+          return
+        }
 
         const waitUntil = response.waitUntil()
         awaiting.add(waitUntil)

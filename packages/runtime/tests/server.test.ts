@@ -1,4 +1,4 @@
-import { EdgeRuntime } from '../src/edge-runtime'
+import { EdgeRuntime } from '@edge-runtime/core'
 import { runServer } from '../src/server'
 import fetch from 'node-fetch'
 
