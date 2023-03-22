@@ -1,7 +1,7 @@
 import { parse } from 'acorn-loose'
 import { promises as fs } from 'fs'
 import { simple } from 'acorn-walk'
-import { EdgeVM } from '@edge-runtime/vm'
+import { EdgeRuntime } from '@edge-runtime/core'
 
 test('exports all primitives in Edge Runtime', async () => {
   const exportedNames = await getExportedNames()
@@ -14,7 +14,7 @@ test('exports all primitives in Edge Runtime', async () => {
     {}
   )
 
-  const runtime = new EdgeVM({
+  const runtime = new EdgeRuntime({
     codeGeneration: { strings: false, wasm: false },
   })
   const result = runtime.require(require.resolve('..'))

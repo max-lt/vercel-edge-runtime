@@ -1,7 +1,7 @@
 import type { EdgeRuntime } from '@edge-runtime/core'
 import type { IncomingMessage, ServerResponse } from 'http'
 import type { Logger, NodeHeaders } from '../types'
-import type { EdgeContext } from '@edge-runtime/vm'
+import type { EdgeContext } from '@edge-runtime/core'
 import { consumeUint8ArrayReadableStream } from './body-streams'
 import { getClonableBodyStream } from './body-streams'
 import prettyMs from 'pretty-ms'

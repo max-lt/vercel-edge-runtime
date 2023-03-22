@@ -1,6 +1,7 @@
+export type { VMOptions, VMContext } from './vm'
 import type { DispatchFetch, ErrorHandler, RejectionHandler } from './types'
-import type { EdgeVMOptions, EdgeContext } from '@edge-runtime/vm'
-import { EdgeVM } from '@edge-runtime/vm'
+import type { EdgeVMOptions, EdgeContext } from './edge-vm'
+import { EdgeVM } from './edge-vm'
 
 interface Options<T extends EdgeContext> extends EdgeVMOptions<T> {
   /**

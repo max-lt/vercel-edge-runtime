@@ -4,9 +4,6 @@
   "homepage": "https://edge-runtime.vercel.app/packages/runtime",
   "version": "2.1.2",
   "main": "dist/index.js",
-  "bin": {
-    "edge-runtime": "dist/cli/index.js"
-  },
   "repository": {
     "directory": "packages/core",
     "type": "git",
@@ -24,7 +21,7 @@
     "web"
   ],
   "dependencies": {
-    "@edge-runtime/vm": "workspace:*"
+    "@edge-runtime/primitives": "workspace:*"
   },
   "engines": {
     "node": ">=14"

@@ -1,4 +1,4 @@
-import { EdgeVM } from '../../src'
+import { EdgeVM } from '../../src/edge-vm'
 
 describe('preload web standard APIs', () => {
   describe('TextDecoder', () => {
@@ -176,7 +176,7 @@ test('interact with fetch out of vm', async () => {
 test('extend a web standard API', async () => {
   const edgeVM = new EdgeVM({
     extend: (context) => {
-      const rawFetch = context.fetch.bind(context.fetch)
+      const rawFetch = context.fetch.bind(context.fetch) as typeof fetch
       context.fetch = async (input: RequestInfo | URL, init?: RequestInit) =>
         rawFetch(
           typeof input === 'string' && !input.startsWith('https://')

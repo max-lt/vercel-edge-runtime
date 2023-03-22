@@ -1,4 +1,4 @@
-import { VM } from '../../src'
+import { VM } from '../../src/vm'
 
 test('new Function is not allowed', () => {
   const vm = new VM()

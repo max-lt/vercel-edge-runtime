@@ -1,5 +1,5 @@
 import path from 'path'
-import { VM } from '../../src'
+import { VM } from '../../src/vm'
 
 test('create an empty context', () => {
   const vm = new VM()

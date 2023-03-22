@@ -1,4 +1,4 @@
-import { EdgeVM } from '../../src'
+import { EdgeVM } from '../../src/edge-vm'
 
 test('crypto.subtle.digest returns an ArrayBuffer', async () => {
   const vm = new EdgeVM()

@@ -1,6 +1,6 @@
 import type { Config, Global } from '@jest/types'
 import type { JestEnvironment } from '@jest/environment'
-import { EdgeVM } from '@edge-runtime/vm'
+import { EdgeRuntime } from '@edge-runtime/core'
 import { installCommonGlobals } from 'jest-util'
 import { LegacyFakeTimers, ModernFakeTimers } from '@jest/fake-timers'
 import { ModuleMocker } from 'jest-mock'
@@ -16,13 +16,13 @@ export = class EdgeEnvironment implements JestEnvironment<number> {
   moduleMocker: ModuleMocker | null
 
   constructor(config: Config.ProjectConfig) {
-    const vm = new EdgeVM({
+    const vm = new EdgeRuntime({
       extend: (context) => {
         context.global = context
         context.Buffer = Buffer
         return context
       },
-      ...((config as any).projectConfig ?? config)?.testEnvironmentOptions
+      ...((config as any).projectConfig ?? config)?.testEnvironmentOptions,
     })
 
     revealPrimitives(vm)
@@ -81,7 +81,7 @@ export = class EdgeEnvironment implements JestEnvironment<number> {
  * make them available. We do this by redefining the property in the
  * context object.
  */
-function revealPrimitives(vm: EdgeVM<any>) {
+function revealPrimitives(vm: EdgeRuntime<any>) {
   ;[
     'Array',
     'ArrayBuffer',

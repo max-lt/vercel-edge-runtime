@@ -1,4 +1,4 @@
-import type { EdgeContext } from '@edge-runtime/vm'
+import type { EdgeContext } from '@edge-runtime/core'
 import { createHandler, Options } from './create-handler'
 import { once } from 'events'
 import http from 'http'
