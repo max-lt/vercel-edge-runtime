@@ -1,2 +1,1 @@
-export { EdgeRuntime } from './edge-runtime'
-export type { EdgeContext } from './edge-vm'
+export { EdgeRuntime, type EdgeContext } from './edge-runtime'

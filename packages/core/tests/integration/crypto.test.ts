@@ -1,7 +1,7 @@
-import { EdgeVM } from '../../src/edge-vm'
+import { EdgeRuntime } from '../../src/edge-runtime'
 
 test('crypto.subtle.digest returns an ArrayBuffer', async () => {
-  const vm = new EdgeVM()
+  const runtime = new EdgeRuntime()
 
   async function fn() {
     const digest = await crypto.subtle.digest(
@@ -11,8 +11,8 @@ test('crypto.subtle.digest returns an ArrayBuffer', async () => {
     return digest
   }
 
-  const fromContext = vm.evaluate(`({ ArrayBuffer })`)
+  const fromContext = runtime.evaluate(`({ ArrayBuffer })`)
 
-  const digest = await vm.evaluate(`(${fn})()`)
+  const digest = await runtime.evaluate(`(${fn})()`)
   expect(digest).toBeInstanceOf(fromContext.ArrayBuffer)
 })

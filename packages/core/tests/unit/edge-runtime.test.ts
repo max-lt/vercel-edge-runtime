@@ -1,9 +1,9 @@
-import { EdgeVM } from '../../src/edge-vm'
+import { EdgeRuntime } from '../../src/edge-runtime'
 
 describe('preload web standard APIs', () => {
   describe('TextDecoder', () => {
     it('with Uint8Array', () => {
-      const edgeVM = new EdgeVM()
+      const edgeVM = new EdgeRuntime()
       edgeVM.evaluate(
         "this.decode = new TextDecoder('utf-8', { ignoreBOM: true }).decode(new Uint8Array([101,100,103,101,45,112,105,110,103,46,118,101,114,99,101,108,46,97,112,112 ]))"
       )
@@ -58,7 +58,7 @@ describe('preload web standard APIs', () => {
         'x-user-defined',
       ]
 
-      const vm = new EdgeVM()
+      const vm = new EdgeRuntime()
       const supported: string[] = []
       const notSupported: string[] = []
 
@@ -119,21 +119,21 @@ describe('preload web standard APIs', () => {
   })
 
   it('URL', () => {
-    const edgeVM = new EdgeVM()
+    const edgeVM = new EdgeRuntime()
     edgeVM.evaluate("this.url = new URL('https://edge-ping.vercel.app/')")
     expect(edgeVM.context.url).toBeTruthy()
   })
 
   describe('fetch', () => {
     it('parsing to text', async () => {
-      const html = await new EdgeVM().evaluate(
+      const html = await new EdgeRuntime().evaluate(
         `fetch('https://example.vercel.sh').then(res => res.text())`
       )
       expect(html.startsWith('<!doctype html>')).toBe(true)
     })
 
     it('with Headers', async () => {
-      const edgeVM = new EdgeVM()
+      const edgeVM = new EdgeRuntime()
       edgeVM.evaluate('this.headers = new Headers()')
       edgeVM.evaluate(
         "this.request = new Request('https://edge-ping.vercel.app', { headers: new Headers({ 'Content-Type': 'text/xml' }) })"
@@ -147,7 +147,7 @@ describe('preload web standard APIs', () => {
     })
 
     it('with AbortController', async () => {
-      const promise = new EdgeVM().evaluate(`
+      const promise = new EdgeRuntime().evaluate(`
       const controller = new AbortController();
       controller.abort();
       fetch('https://example.vercel.sh', {
@@ -161,7 +161,7 @@ describe('preload web standard APIs', () => {
 })
 
 test('interact with fetch out of vm', async () => {
-  const edgeVM = new EdgeVM()
+  const edgeVM = new EdgeRuntime()
   const promise = edgeVM.evaluate<Promise<Response>>(
     "fetch('https://edge-ping.vercel.app')"
   )
@@ -174,7 +174,7 @@ test('interact with fetch out of vm', async () => {
 })
 
 test('extend a web standard API', async () => {
-  const edgeVM = new EdgeVM({
+  const edgeVM = new EdgeRuntime({
     extend: (context) => {
       const rawFetch = context.fetch.bind(context.fetch) as typeof fetch
       context.fetch = async (input: RequestInfo | URL, init?: RequestInit) =>
@@ -205,68 +205,76 @@ test('extend a web standard API', async () => {
 // TODO: add decoder case
 it('uses the same builtins in polyfills as in VM', () => {
   expect(
-    new EdgeVM().evaluate(
+    new EdgeRuntime().evaluate(
       `(new TextEncoder().encode('abc')) instanceof Uint8Array`
     )
   ).toBe(true)
   expect(
-    new EdgeVM().evaluate(`(new TextEncoder().encode('abc')) instanceof Object`)
+    new EdgeRuntime().evaluate(
+      `(new TextEncoder().encode('abc')) instanceof Object`
+    )
   ).toBe(true)
   expect(
-    new EdgeVM().evaluate(
+    new EdgeRuntime().evaluate(
       `(new TextEncoderStream()).writable instanceof WritableStream`
     )
   ).toBe(true)
-  expect(new EdgeVM().evaluate(`(new Uint8Array()) instanceof Object`)).toBe(
-    true
-  )
   expect(
-    new EdgeVM().evaluate(`(new AbortController()) instanceof Object`)
+    new EdgeRuntime().evaluate(`(new Uint8Array()) instanceof Object`)
   ).toBe(true)
   expect(
-    new EdgeVM().evaluate(
+    new EdgeRuntime().evaluate(`(new AbortController()) instanceof Object`)
+  ).toBe(true)
+  expect(
+    new EdgeRuntime().evaluate(
       `(new URL('https://example.vercel.sh')) instanceof Object`
     )
   ).toBe(true)
   expect(
-    new EdgeVM().evaluate(`(new URLSearchParams()) instanceof Object`)
+    new EdgeRuntime().evaluate(`(new URLSearchParams()) instanceof Object`)
   ).toBe(true)
-  expect(new EdgeVM().evaluate(`(new URLPattern()) instanceof Object`)).toBe(
-    true
-  )
+  expect(
+    new EdgeRuntime().evaluate(`(new URLPattern()) instanceof Object`)
+  ).toBe(true)
 })
 
 it('does not alter instanceof for literals and objects', async () => {
-  expect(new EdgeVM().evaluate('new Float32Array() instanceof Object')).toBe(
+  expect(
+    new EdgeRuntime().evaluate('new Float32Array() instanceof Object')
+  ).toBe(true)
+  expect(
+    new EdgeRuntime().evaluate('new Float32Array() instanceof Float32Array')
+  ).toBe(true)
+  expect(new EdgeRuntime().evaluate('[] instanceof Array')).toBe(true)
+  expect(new EdgeRuntime().evaluate('new Array() instanceof Array')).toBe(true)
+  expect(new EdgeRuntime().evaluate('/^hello$/gi instanceof RegExp')).toBe(true)
+  expect(
+    new EdgeRuntime().evaluate('new RegExp("^hello$", "gi") instanceof RegExp')
+  ).toBe(true)
+  expect(new EdgeRuntime().evaluate('({ foo: "bar" }) instanceof Object')).toBe(
     true
   )
   expect(
-    new EdgeVM().evaluate('new Float32Array() instanceof Float32Array')
-  ).toBe(true)
-  expect(new EdgeVM().evaluate('[] instanceof Array')).toBe(true)
-  expect(new EdgeVM().evaluate('new Array() instanceof Array')).toBe(true)
-  expect(new EdgeVM().evaluate('/^hello$/gi instanceof RegExp')).toBe(true)
-  expect(
-    new EdgeVM().evaluate('new RegExp("^hello$", "gi") instanceof RegExp')
-  ).toBe(true)
-  expect(new EdgeVM().evaluate('({ foo: "bar" }) instanceof Object')).toBe(true)
-  expect(
-    new EdgeVM().evaluate('Object.create({ foo: "bar" }) instanceof Object')
+    new EdgeRuntime().evaluate(
+      'Object.create({ foo: "bar" }) instanceof Object'
+    )
   ).toBe(true)
   expect(
-    new EdgeVM().evaluate('new Object({ foo: "bar" }) instanceof Object')
+    new EdgeRuntime().evaluate('new Object({ foo: "bar" }) instanceof Object')
   ).toBe(true)
-  expect(new EdgeVM().evaluate('(() => {}) instanceof Function')).toBe(true)
-  expect(new EdgeVM().evaluate('(function () {}) instanceof Function')).toBe(
+  expect(new EdgeRuntime().evaluate('(() => {}) instanceof Function')).toBe(
     true
   )
+  expect(
+    new EdgeRuntime().evaluate('(function () {}) instanceof Function')
+  ).toBe(true)
 })
 
 describe('contains all required primitives', () => {
-  let edgeVM: EdgeVM<any>
+  let edgeVM: EdgeRuntime<any>
 
   beforeAll(() => {
-    edgeVM = new EdgeVM()
+    edgeVM = new EdgeRuntime()
   })
 
   it.each([
